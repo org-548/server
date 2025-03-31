@@ -1,0 +1,35 @@
+name: Build an upload ECR image
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  first:
+    name: first-job
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::637423489195:role/github-oidc-role-s
+          aws-region: eu-north-1
+
+      - name: some debug
+        run: |
+          pwd
+          la -lah
+          terraform version
+          aws --version
+      
