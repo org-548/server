@@ -30,4 +30,10 @@ jobs:
           ls -lah
           terraform version
           aws --version
+
+      - name: Build and tag of docker image
+        run: docker build -t terezabisharyan/srv:${GITHUB_SHA} .
+
+      - name: docker debug
+        run: docker images
       
