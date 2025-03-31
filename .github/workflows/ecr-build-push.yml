@@ -27,7 +27,7 @@ jobs:
       - name: some debug
         run: |
           pwd
-          la -lah
+          ls -lah
           terraform version
           aws --version
       
