@@ -84,7 +84,7 @@ jobs:
       - name: Build, tag and push image to AWS ECR
         env:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          REPOSITORY: fnt
+          REPOSITORY: server-repo
           IMAGE_TAG: ${GITHUB_SHA::7}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
