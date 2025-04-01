@@ -1,0 +1,61 @@
+name: Deploy on EKS
+
+on: [workflow_dispatch, push]
+
+jobs:
+  first:
+    name: dep-first-job
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::637423489195:role/role-for-github-oidc
+          aws-region: eu-north-1
+
+      - name: Git Setup
+        shell: bash
+        #working-directory: ${{ inputs.not-default-workdir }}
+        run: |
+          echo "Git setup"
+          pwd
+          git config --global user.name 'Tereza'
+          git config --global user.email 'bisharyant@gmail.com'  
+
+      - name: SSH Setup
+        uses: MrSquaare/ssh-setup-action@v3
+        with:
+          host: github.com
+          private-key: ${{ secrets.SSH_PRIV_KEY }}
+
+      - name: Check and clone repository
+        shell: bash
+        #working-directory: ${{ inputs.not-default-workdir }}
+        run: |
+          echo "Clone repo"
+          pwd
+          if grep -q infra <<< $(ls -lt); then
+            echo "Repository with name infra already exists!"
+            rm -rf infra
+          fi
+          git clone git@github.com:org-548/infra.git
+
+      - name: Create ECR resources with terraform
+        working-directory: infra/terraform
+        run: |
+          terraform init
+          terraform destroy --auto-approve -var-file=./values/server.tfvars -var 'enable_net=true'
+          terraform plan -var-file=./values/server.tfvars -var 'enable_net=true'
+          terraform apply --auto-approve -var-file=./values/server.tfvars -var 'enable_net=true'    
+
