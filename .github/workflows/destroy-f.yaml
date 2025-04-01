@@ -1,0 +1,78 @@
+name: Destroy ECR
+
+on:
+  workflow_dispatch
+
+jobs:
+  first:
+    name: first-job
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::637423489195:role/role-for-github-oidc
+          aws-region: eu-north-1
+
+      - name: some debug
+        run: |
+          pwd
+          ls -lah
+          terraform version
+          aws --version
+
+      #- name: Build and tag of docker image
+        #run: docker build -t terezabisharyan/srv:${GITHUB_SHA::7} .
+
+      #- name: docker debug
+        #run: docker images
+
+      - name: Git Setup
+        shell: bash
+        #working-directory: ${{ inputs.not-default-workdir }}
+        run: |
+          echo "Git setup"
+          pwd
+          git config --global user.name 'Tereza'
+          git config --global user.email 'bisharyant@gmail.com'  
+
+      - name: SSH Setup
+        uses: MrSquaare/ssh-setup-action@v3
+        with:
+          host: github.com
+          private-key: ${{ secrets.SSH_PRIV_KEY }}
+
+      - name: Check and clone repository
+        shell: bash
+        #working-directory: ${{ inputs.not-default-workdir }}
+        run: |
+          echo "Clone repo"
+          pwd
+          if grep -q infra <<< $(ls -lt); then
+            echo "Repository with name infra already exists!"
+            rm -rf infra
+          fi
+          git clone git@github.com:org-548/infra.git
+
+      - name: Check newly cloned repo    
+        run: |
+          pwd
+          ls -lah
+          ls -lah ./infra
+
+      - name: Create ECR resources with terraform
+        working-directory: infra/terraform
+        run: |
+          terraform init
+          terraform destroy --auto-approve -var-file=./values/server.tfvars
