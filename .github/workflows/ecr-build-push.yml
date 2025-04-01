@@ -82,11 +82,14 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Get short SHA
+        run: echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 8))" >> $env:GITHUB_ENV  
+
       - name: Build, tag and push image to AWS ECR
         env:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           REPOSITORY: server-repo
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: ${{ env.SHORT_SHA }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG  
