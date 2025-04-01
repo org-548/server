@@ -76,7 +76,8 @@ jobs:
           terraform init
           terraform destroy --auto-approve -var-file=./values/server.tfvars
           terraform plan -var-file=./values/server.tfvars
-          terraform apply --auto-approve -var-file=./values/server.tfvars    
+          terraform apply --auto-approve -var-file=./values/server.tfvars
+          terraform apply --auto-approve -var-file=./values/server.tfvars
 
       - name: Logit to Amazon ECR
         id: ecr-login
