@@ -31,11 +31,11 @@ jobs:
           terraform version
           aws --version
 
-      - name: Build and tag of docker image
-        run: docker build -t terezabisharyan/srv:${GITHUB_SHA::7} .
+      #- name: Build and tag of docker image
+        #run: docker build -t terezabisharyan/srv:${GITHUB_SHA::7} .
 
-      - name: docker debug
-        run: docker images
+      #- name: docker debug
+        #run: docker images
 
       - name: Git Setup
         shell: bash
@@ -75,5 +75,19 @@ jobs:
         run: |
           terraform init
           terraform plan -var-file=./modules/ecr/server.tfvars
-          terraform apply --auto-approve -var-file=./modules/ecr/server.tfvars
-      
+          terraform apply --auto-approve -var-file=./modules/ecr/server.tfvars    
+
+      - name: Logit to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag and push image to AWS ECR
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          REPOSITORY: fnt
+          IMAGE_TAG: ${{ GITHUB_SHA::7 }}
+        run: |
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG  
+
+    
