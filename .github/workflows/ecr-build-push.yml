@@ -73,10 +73,10 @@ jobs:
       - name: Create ECR resources with terraform
         working-directory: infra/terraform
         run: |
-          terraform destroy --auto-approve -var-file=./modules/ecr/server.tfvars
           terraform init
-          terraform plan -var-file=./modules/ecr/server.tfvars
-          terraform apply --auto-approve -var-file=./modules/ecr/server.tfvars    
+          terraform destroy --auto-approve -var-file=./modules/ecr/server.tfvars
+          terraform plan -var-file=./values/tfvars
+          terraform apply --auto-approve -var-file=./values/server.tfvars    
 
       - name: Logit to Amazon ECR
         id: ecr-login
