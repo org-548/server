@@ -32,12 +32,6 @@ jobs:
           terraform version
           aws --version
 
-      #- name: Build and tag of docker image
-        #run: docker build -t terezabisharyan/srv:${GITHUB_SHA::7} .
-
-      #- name: docker debug
-        #run: docker images
-
       - name: Git Setup
         shell: bash
         #working-directory: ${{ inputs.not-default-workdir }}
@@ -75,4 +69,4 @@ jobs:
         working-directory: infra/terraform
         run: |
           terraform init
-          terraform destroy --auto-approve -var-file=./values/server.tfvars
+          terraform destroy --auto-approve -var-file=./values/server.tfvars -var 'enable_net=true'
