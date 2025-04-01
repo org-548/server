@@ -73,8 +73,8 @@ jobs:
       - name: Create ECR resources with terraform
         working-directory: infra/terraform
         run: |
-          terraform init
           terraform destroy --auto-approve -var-file=./modules/ecr/server.tfvars
+          terraform init
           terraform plan -var-file=./modules/ecr/server.tfvars
           terraform apply --auto-approve -var-file=./modules/ecr/server.tfvars    
 
