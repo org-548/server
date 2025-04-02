@@ -87,6 +87,18 @@ jobs:
           IMAGE_TAG: ${{ env.SHORT_SHA }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG  
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Setup Helmwave
+        run: |
+          export VERSION=0.19.3
+          wget -c https://github.com/helmwave/helmwave/releases/download/v$VERSION/helmwave_${VERSION}_linux_amd64.tar.gz -O - | tar -xz
+          mv helmwave /usr/local/bin/
+
+      - name: Helmwave build/up
+        working-directory: infra/charts
+        run: |
+          helmwave up --build --kubeconfig
+          
 
     
