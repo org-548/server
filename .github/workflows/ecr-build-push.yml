@@ -50,12 +50,6 @@ jobs:
           fi
           git clone git@github.com:org-548/infra.git
 
-      - name: Check newly cloned repo    
-        run: |
-          pwd
-          ls -lah
-          ls -lah ./infra
-
       - name: Create ECR resources with terraform
         id: get-output
         working-directory: infra/terraform
@@ -88,6 +82,15 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.32.3'
+        id: install    
+
+      - name: Udpate kubeconfig
+        run: aws eks update-kubeconfig --region eu-north-1 --name first-eks
 
       - name: Setup Helmwave
         run: |
