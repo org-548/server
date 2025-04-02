@@ -24,22 +24,8 @@ jobs:
           role-to-assume: arn:aws:iam::637423489195:role/role-for-github-oidc
           aws-region: eu-north-1
 
-      - name: some debug
-        run: |
-          pwd
-          ls -lah
-          terraform version
-          aws --version
-
-      #- name: Build and tag of docker image
-        #run: docker build -t terezabisharyan/srv:${GITHUB_SHA::7} .
-
-      #- name: docker debug
-        #run: docker images
-
-      - name: Git Setup
+      - name: Git Setup  
         shell: bash
-        #working-directory: ${{ inputs.not-default-workdir }}
         run: |
           echo "Git setup"
           pwd
@@ -71,12 +57,19 @@ jobs:
           ls -lah ./infra
 
       - name: Create ECR resources with terraform
+        id: get-output
         working-directory: infra/terraform
+        continue-on-error: true
         run: |
           terraform init
           terraform destroy --auto-approve -var-file=./values/server.tfvars
           terraform plan -var-file=./values/server.tfvars
-          terraform apply --auto-approve -var-file=./values/server.tfvars
+          terraform apply --auto-approve -var-file=./values/server.tfvars | tail -n 11 >> out.txt
+          echo "error-out=$(head -n 1 out.txt)" >> $GITHUB_OUTPUT
+
+      - name: Reapply terraform code
+        if: contains("${{ steps.get-output outputs.error-out}}", 'Not enough list items')
+        run: |
           terraform apply --auto-approve -var-file=./values/server.tfvars
 
       - name: Logit to Amazon ECR
