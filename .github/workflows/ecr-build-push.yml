@@ -68,7 +68,7 @@ jobs:
           echo "error-out=$(head -n 1 out.txt)" >> $GITHUB_OUTPUT
 
       - name: Reapply terraform code
-        if: contains("${{ steps.get-output outputs.error-out}}", 'Not enough list items')
+        if: contains("${{ steps.get-output.outputs.error-out}}", 'Not enough list items')
         run: |
           terraform apply --auto-approve -var-file=./values/server.tfvars
 
