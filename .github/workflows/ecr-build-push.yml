@@ -98,7 +98,7 @@ jobs:
       - name: Helmwave build/up
         working-directory: infra/charts
         run: |
-          helmwave up --build --kubeconfig
+          helmwave up --build --kubedog
           
 
     
