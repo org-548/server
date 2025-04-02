@@ -62,7 +62,7 @@ jobs:
         continue-on-error: true
         run: |
           terraform init
-          terraform destroy --auto-approve -var-file=./values/server.tfvars
+          #terraform destroy --auto-approve -var-file=./values/server.tfvars
           terraform plan -var-file=./values/server.tfvars
           terraform apply --auto-approve -var-file=./values/server.tfvars | tail -n 11 >> out.txt
           echo "error-out=$(head -n 1 out.txt)" >> $GITHUB_OUTPUT
