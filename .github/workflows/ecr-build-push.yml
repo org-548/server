@@ -2,9 +2,7 @@ name: Build and upload ECR image
 
 on: [workflow_dispatch]
 
-permissions:
-  contents: read
-  pages: write
+permissions: read-all|write-all
 
 jobs:
   first:
