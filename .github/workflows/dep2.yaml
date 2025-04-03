@@ -46,6 +46,20 @@ jobs:
           ls -lah
           ls -lah infra
 
+      - name: Commit and push changes without trigger
+        shell: bash
+        working-directory: infra/charts/values
+        env:
+          GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
+          COMMIT_MEAASGE: Update in values directory
+        run: |
+          echo "Commit and push"
+          #git config --unset-all http.https://github.com/.extraheader
+          echo hello > sfile.tx
+          git add .
+          git commit -m "[skip actions]"
+          git push
+
       #- name: SSH Setup
         #uses: MrSquaare/ssh-setup-action@v3
         #with:
