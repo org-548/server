@@ -38,6 +38,7 @@ jobs:
         with:
           host: github.com
           private-key: ${{ secrets.SSH_PRIV_KEY }}
+          private-key-name: github
 
       - name: Check and clone repository
         shell: bash
