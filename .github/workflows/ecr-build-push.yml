@@ -1,4 +1,4 @@
-name: Build an upload ECR image
+name: Build and upload ECR image
 
 on: [workflow_dispatch]
 
@@ -67,7 +67,7 @@ jobs:
         run: |
           terraform apply --auto-approve -var-file=./values/server.tfvars
 
-      - name: Logit to Amazon ECR
+      - name: Login to Amazon ECR
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2
 
@@ -83,6 +83,11 @@ jobs:
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      - name: Update tag in appropriate values.yaml file
+        working-directory: infra/charts/values
+        run: |
+          sed -E -i'' "s/(.*tag: ).*/\1${{ env.SHORT_SHA }}/" 'srv-values.yaml'
+          
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
         with:
