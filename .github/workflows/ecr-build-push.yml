@@ -2,12 +2,13 @@ name: Build and upload ECR image
 
 on: [workflow_dispatch]
 
+permissions:
+  contents: read
+  pages: write
+
 jobs:
   first:
     name: first-job
-    permissions:
-      contents: read
-      pages: write
     runs-on: ubuntu-latest
 
     #permissions:
