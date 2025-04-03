@@ -89,12 +89,12 @@ jobs:
           sed -E -i'' "s/(.*tag: ).*/\1${{ env.SHORT_SHA }}/" 'srv-values.yaml'
 
       - name: Commit and push changes without trigger
-        shell: bash
+        working-directory: infra/charts/values
         env:
           GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
         run: |
           echo "Commit and push"
-          git add infra/charts/values/srv-values.yaml
+          git add .
           git commit -m "[skip actions]"
           git push origin main    
           
