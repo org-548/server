@@ -88,11 +88,17 @@ jobs:
         run: |
           sed -E -i'' "s/(.*tag: ).*/\1${{ env.SHORT_SHA }}/" 'srv-values.yaml'
           
-      - name: Commit & Push changes
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.PA_TOKEN }}
-          directory: infra/charts/values
+      - name: Commit and push changes without trigger
+        shell: bash
+        working-directory: infra/charts/values
+        env:
+          GITHUB_TOKEN: ${{ inputs.git-token }}
+        run: |
+          echo "Commit and push"
+          git config --unset-all http.https://github.com/.extraheader
+          git add .
+          git commit -m "[skip actions]"
+          git push origin main
           
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
