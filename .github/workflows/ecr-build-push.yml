@@ -94,7 +94,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
         run: |
           echo "Commit and push"
-          git add .
+          git add infra/charts/values/srv-values.yaml
           git commit -m "[skip actions]"
           git push origin main    
           
