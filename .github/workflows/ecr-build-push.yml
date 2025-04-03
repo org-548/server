@@ -89,7 +89,6 @@ jobs:
           sed -E -i'' "s/(.*tag: ).*/\1${{ env.SHORT_SHA }}/" 'srv-values.yaml'
           
       - name: Commit and push changes without trigger
-        shell: bash
         working-directory: infra/charts/values
         env:
           GITHUB_TOKEN: ${{ inputs.git-token }}
