@@ -91,7 +91,7 @@ jobs:
       - name: Commit and push changes without trigger
         working-directory: infra/charts/values
         env:
-          GITHUB_TOKEN: ${{ inputs.git-token }}
+          GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
         run: |
           echo "Commit and push"
           git config --unset-all http.https://github.com/.extraheader
