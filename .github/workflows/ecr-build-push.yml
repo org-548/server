@@ -87,6 +87,11 @@ jobs:
         working-directory: infra/charts/values
         run: |
           sed -E -i'' "s/(.*tag: ).*/\1${{ env.SHORT_SHA }}/" 'srv-values.yaml'
+
+      - name: Debug
+        run: |
+          ls -lah
+          ls -lah ~/.ssh
           
       - name: Commit and push changes without trigger
         working-directory: infra/charts/values
