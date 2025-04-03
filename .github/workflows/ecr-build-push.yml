@@ -5,8 +5,9 @@ on: [workflow_dispatch]
 jobs:
   first:
     name: first-job
-    #permissions:
-      #contents: write
+    permissions:
+      contents: read
+      pages: write
     runs-on: ubuntu-latest
 
     #permissions:
