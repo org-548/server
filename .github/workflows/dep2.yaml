@@ -82,6 +82,7 @@ jobs:
       - name: Update tag in appropriate values.yaml file
         working-directory: infra/charts/values
         run: |
+          echo ${{ env.SHORT_SHA }}
           sed -E -i'' "s/(.*tag: ).*/\1${{ env.SHORT_SHA }}/" 'srv-values.yaml'
 
       - name: Commit and push changes without trigger
