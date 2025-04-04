@@ -91,10 +91,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PA_TOKEN }}
           COMMIT_MESSAGE: "Update image-tag with ${{ env.SHORT_SHA }}"
         run: |
-          echo "Commit and push to second repo"
-          git add .
-          git commit -m "${{ env.COMMIT_MESSAGE }}"
-          git push
+          if [[ `git status --porcelain --untracked-files=no` ]]; then
+            echo "Commit and push to second repo"
+            git add .
+            git commit -m "${{ env.COMMIT_MESSAGE }}"
+            git push
+          else
+            echo "No changes"
+            exit 0
+          fi
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
