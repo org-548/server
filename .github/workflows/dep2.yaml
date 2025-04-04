@@ -110,6 +110,10 @@ jobs:
       - name: Udpate kubeconfig
         run: aws eks update-kubeconfig --region eu-north-1 --name first-eks
 
+      - name: Ingress controller deploymaent
+        run: |
+          kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.1/deploy/static/provider/cloud/deploy.yaml
+
       - name: Setup Helmwave
         run: |
           export VERSION=0.19.3
@@ -120,5 +124,4 @@ jobs:
         working-directory: infra/charts
         run: |
           helmwave up --build --kubedog    
-
     
