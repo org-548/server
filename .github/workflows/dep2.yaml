@@ -52,16 +52,16 @@ jobs:
         continue-on-error: true
         run: |
           terraform init
-          #terraform destroy --auto-approve -var-file=./values/server.tfvars
-          terraform plan -var-file=./values/server.tfvars
-          terraform apply --auto-approve -var-file=./values/server.tfvars | tail -n 11 >> out.txt
+          #terraform destroy --auto-approve
+          terraform plan
+          terraform apply --auto-approve | tail -n 11 >> out.txt
           echo "error-out=$(head -n 1 out.txt)" >> $GITHUB_OUTPUT
 
       - name: Reapply terraform code
         working-directory: infra/terraform
         if: contains("${{ steps.get-output.outputs.error-out}}", 'Not enough list items')
         run: |
-          terraform apply --auto-approve -var-file=./values/server.tfvars
+          terraform apply --auto-approve
 
       - name: Login to Amazon ECR
         id: ecr-login
