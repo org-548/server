@@ -7,7 +7,6 @@ jobs:
     name: first-job
     runs-on: ubuntu-latest
 
-
     permissions:
       id-token: write
       contents: read
@@ -32,19 +31,19 @@ jobs:
           role-to-assume: arn:aws:iam::637423489195:role/role-for-github-oidc
           aws-region: eu-north-1
 
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: 'v1.32.3'
+        id: install    
+
       - name: Git Setup  
         shell: bash
         run: |
           echo "Git setup"
           pwd
           git config --global user.name 'Tereza'
-          git config --global user.email 'bisharyant@gmail.com'  
-
-      - name: Debug-first
-        run: |
-          pwd
-          ls -lah
-          ls -lah infra
+          git config --global user.email 'bisharyant@gmail.com'
 
       - name: Apply Terraform infrastructure
         id: get-output
@@ -52,7 +51,6 @@ jobs:
         continue-on-error: true
         run: |
           terraform init
-          #terraform destroy --auto-approve
           terraform plan
           terraform apply --auto-approve | tail -n 11 >> out.txt
           echo "error-out=$(head -n 1 out.txt)" >> $GITHUB_OUTPUT
@@ -63,12 +61,12 @@ jobs:
         run: |
           terraform apply --auto-approve
 
+      - name: Get short SHA
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV  
+
       - name: Login to Amazon ECR
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v2      
-
-      - name: Get short SHA
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
 
       - name: Build, tag and push image to AWS ECR
         env:
@@ -100,18 +98,12 @@ jobs:
           else
             echo "No changes"
             exit 0
-          fi
-
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v4
-        with:
-          version: 'v1.32.3'
-        id: install    
+          fi 
 
       - name: Udpate kubeconfig
         run: aws eks update-kubeconfig --region eu-north-1 --name first-eks
 
-      - name: Ingress controller deploymaent
+      - name: Ingress controller deployment
         run: |
           kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.1/deploy/static/provider/cloud/deploy.yaml
 
