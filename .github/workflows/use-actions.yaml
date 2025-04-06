@@ -18,6 +18,11 @@ jobs:
       github_pat: ${{ secrets.PA_TOKEN }}
 
   Using-second-reusable-workflow:
+
+    permissions:
+      id-token: write
+      contents: read
+  
     needs: Using-first-reusable-workflow
     uses: org-548/reusable/.github/workflows/k8s-deployment.yaml@main
     secrets:
