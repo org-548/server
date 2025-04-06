@@ -4,6 +4,11 @@ on: [workflow_dispatch]
 
 jobs:
   Using-first-reusable-workflow:
+  
+    permissions:
+      id-token: write
+      contents: read
+      
     uses: org-548/reusable/.github/workflows/ecr-build-push.yaml@main
     with:
       ecr-repo-name: server-repo
