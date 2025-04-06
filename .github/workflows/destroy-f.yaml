@@ -69,4 +69,4 @@ jobs:
         working-directory: infra/terraform
         run: |
           terraform init
-          terraform destroy --auto-approve -var-file=./values/server.tfvars
+          terraform destroy --auto-approve
