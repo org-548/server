@@ -1,4 +1,4 @@
-name: ECR build-push in source repo
+name: Full backend lifecycle workflow
 
 on: [workflow_dispatch]
 
@@ -15,7 +15,6 @@ jobs:
       ecr-repo-name: server-repo
       values-file: srv-values.yaml
     secrets:
-      #region: ${{ secrets.AWS_REGION }}
       github_pat: ${{ secrets.PA_TOKEN }}
 
   Using-second-reusable-workflow:
@@ -28,7 +27,6 @@ jobs:
     uses: org-548/reusable/.github/workflows/k8s-deployment.yaml@main
     secrets:
       github_pat: ${{ secrets.PA_TOKEN }}
-      #region: ${{ secrets.AWS_REGION }}
 
   Trigger-frontend-workflow:
     needs: Using-second-reusable-workflow
@@ -49,3 +47,5 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/$repo_owner/$repo_name/dispatches \
             -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"unit\": false, \"integration\": true}}"    
+
+            
