@@ -11,7 +11,7 @@ jobs:
       
     uses: org-548/reusable/.github/workflows/ecr-build-push.yaml@main
     with:
-      app_unit: client
+      app_unit: server
       ecr-repo-name: server-repo
       values-file: srv-values.yaml
     secrets:
