@@ -15,7 +15,7 @@ jobs:
       ecr-repo-name: server-repo
       values-file: srv-values.yaml
     secrets:
-      region: ${{ secrets.AWS_REGION }}
+      #region: ${{ secrets.AWS_REGION }}
       github_pat: ${{ secrets.PA_TOKEN }}
 
   Using-second-reusable-workflow:
@@ -28,7 +28,7 @@ jobs:
     uses: org-548/reusable/.github/workflows/k8s-deployment.yaml@main
     secrets:
       github_pat: ${{ secrets.PA_TOKEN }}
-      region: ${{ secrets.AWS_REGION }}
+      #region: ${{ secrets.AWS_REGION }}
 
   Trigger-frontend-workflow:
     needs: Using-second-reusable-workflow
