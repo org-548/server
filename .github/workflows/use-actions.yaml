@@ -25,6 +25,8 @@ jobs:
   
     needs: Using-first-reusable-workflow
     uses: org-548/reusable/.github/workflows/k8s-deployment.yaml@main
+    with:
+      app_unit: server
     secrets:
       github_pat: ${{ secrets.PA_TOKEN }}
 
