@@ -1,6 +1,9 @@
 name: Full backend lifecycle workflow
 
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
 
 jobs:
   Using-first-reusable-workflow:
