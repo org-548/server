@@ -16,7 +16,7 @@ jobs:
     with:
       app_unit: server
       ecr-repo-name: server-repo
-      values-file: srv-values.yaml
+      values-file: backend-values.yaml
     secrets:
       github_pat: ${{ secrets.PA_TOKEN }}
 
