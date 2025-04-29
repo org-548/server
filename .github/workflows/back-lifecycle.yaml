@@ -2,8 +2,6 @@ name: Full backend lifecycle workflow
 
 on:
   workflow_dispatch:
-  push:
-    branches: ["main"]
 
 jobs:
   Apply-cfn-stack:
@@ -39,12 +37,12 @@ jobs:
       github_pat: ${{ secrets.PA_TOKEN }}
 
   Using-second-reusable-workflow:
-
+    needs: Using-first-reusable-workflow
+    
     permissions:
       id-token: write
       contents: read
   
-    needs: Using-first-reusable-workflow
     uses: org-548/reusable/.github/workflows/k8s-deployment.yaml@main
     with:
       app_unit: server
