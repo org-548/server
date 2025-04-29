@@ -30,7 +30,13 @@ jobs:
         run: |
           echo "Git setup"
           git config --global user.name 'Tereza'
-          git config --global user.email 'bisharyant@gmail.com'  
+          git config --global user.email 'bisharyant@gmail.com'
+
+      - name: SSH Setup
+        uses: MrSquaare/ssh-setup-action@v3
+        with:
+          host: github.com
+          private-key: ${{ secrets.SSH_PRIV_KEY }}    
 
       - name: Check and clone repository
         shell: bash
