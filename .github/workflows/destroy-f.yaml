@@ -65,8 +65,11 @@ jobs:
           ls -lah
           ls -lah ./infra
 
-      - name: Create ECR resources with terraform
+      - name: Terraform destroy
         working-directory: infra/terraform
         run: |
           terraform init
           terraform destroy --auto-approve
+
+      - name: Down cloudformation stack
+        run: aws cloudformation delete-stack --stack-name github-oidc-conf
