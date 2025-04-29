@@ -28,7 +28,7 @@ jobs:
       id-token: write
       contents: read
       
-    uses: org-548/reusable/.github/workflows/ecr-build-push.yaml@main
+    uses: org-548/reusable/.github/workflows/tf-up.yaml@main
     with:
       app_unit: server
       ecr-repo-name: server-repo
@@ -43,7 +43,7 @@ jobs:
       id-token: write
       contents: read
   
-    uses: org-548/reusable/.github/workflows/k8s-deployment.yaml@main
+    uses: org-548/reusable/.github/workflows/k8s-deploy.yaml@main
     with:
       app_unit: server
     secrets:
