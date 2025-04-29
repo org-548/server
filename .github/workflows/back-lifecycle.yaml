@@ -18,7 +18,7 @@ jobs:
       - name: Up cloudformation stack
         working-directory: infra
         run: |
-          aws cloudformation create-stack --stack-name gthub-oidc-conf \
+          aws cloudformation create-stack --stack-name ${{ vars.CFN_STACK_NAME}} \
             --capabilities CAPABILITY_NAMED_IAM --template-body file://cfn-template.yaml
   
   Using-first-reusable-workflow:
