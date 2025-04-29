@@ -6,8 +6,26 @@ on:
     branches: ["main"]
 
 jobs:
-  Using-first-reusable-workflow:
+  Apply-cfn-stack:
+    name: Cfn-stack
+    runs-on: self-hosted
+    steps:
+      - name: Checkout infra repo
+        uses: actions/checkout@v4
+        with:
+          repository: org-548/infra
+          path: infra
+          token: ${{ secrets.github_pat }}
+
+      - name: Up cloudformation stack
+        working-directory: infra
+        run: |
+          aws cloudformation create-stack --stack-name gthub-oidc-conf \
+            --capabilities CAPABILITY_NAMED_IAM --template-body file://cfn-template.yaml
   
+  Using-first-reusable-workflow:
+    needs: [Apply-cfn-stack]
+    
     permissions:
       id-token: write
       contents: read
