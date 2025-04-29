@@ -15,7 +15,7 @@ jobs:
         with:
           repository: org-548/infra
           path: infra
-          token: ${{ secrets.github_pat }}
+          token: ${{ secrets.PA_TOKEN }}
 
       - name: Up cloudformation stack
         working-directory: infra
