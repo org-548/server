@@ -4,69 +4,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  Apply-cfn-stack:
-    name: Cfn-stack
-    runs-on: self-hosted
-    steps:
-      - name: Checkout infra repo
-        uses: actions/checkout@v4
-        with:
-          repository: org-548/infra
-          path: infra
-          token: ${{ secrets.PA_TOKEN }}
-
-      - name: Up cloudformation stack
-        working-directory: infra
-        run: |
-          aws cloudformation create-stack --stack-name ${{ vars.CFN_STACK_NAME}} \
-            --capabilities CAPABILITY_NAMED_IAM --template-body file://cfn-template.yaml
-  
-  Using-first-reusable-workflow:
-    needs: [Apply-cfn-stack]
-    
+  Ecr-build-push-wf:
     permissions:
       id-token: write
       contents: read
       
-    uses: org-548/reusable/.github/workflows/tf-up.yaml@main
+    uses: org-548/reusable/.github/workflows/workflow.yaml@main
     with:
       app_unit: server
       ecr-repo-name: server-repo
       values-file: backend-values.yaml
     secrets:
       github_pat: ${{ secrets.PA_TOKEN }}
-
-  Using-second-reusable-workflow:
-    needs: Using-first-reusable-workflow
-    
-    permissions:
-      id-token: write
-      contents: read
-  
-    uses: org-548/reusable/.github/workflows/k8s-deploy.yaml@main
-    with:
-      app_unit: server
-    secrets:
-      github_pat: ${{ secrets.PA_TOKEN }}
-
-  Trigger-frontend-workflow:
-    needs: Using-second-reusable-workflow
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Trigger workflow in frontend repo
-        run: |
-          # Set the required variables
-          repo_owner="org-548" 
-          repo_name="client"  
-          event_type="trigger-workflow"
-  
-          curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.PA_TOKEN }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/$repo_owner/$repo_name/dispatches \
-            -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"unit\": false, \"integration\": true}}"    
-
-            
+          
