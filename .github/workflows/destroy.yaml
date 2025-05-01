@@ -54,7 +54,4 @@ jobs:
           terraform init
           terraform destroy --auto-approve
 
-      - name: Down cloudformation stack
-        run: aws cloudformation delete-stack --stack-name ${{ vars.CFN_STACK_NAME }}
-
-        
+    
