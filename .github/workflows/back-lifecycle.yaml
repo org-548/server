@@ -1,6 +1,9 @@
 name: Full backend lifecycle workflow
 
 on:
+  push:
+    branches:
+    - main
   workflow_dispatch:
 
 jobs:
